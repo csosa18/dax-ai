@@ -728,11 +728,11 @@ img,svg{max-width:100%;}
    AGENT DASHBOARD
 ═══════════════════════════════════════ */
 #page-dashboard{background:var(--bg2);}
-.dash{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px calc(100vh - 56px);min-height:100vh;}
+.dash{display:grid;grid-template-columns:200px 1fr;grid-template-rows:52px calc(100vh - 52px);min-height:100vh;}
 .dash-sidebar{grid-column:1;grid-row:2;background:var(--bg);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column;overflow-y:auto;}
 .ds-logo{display:flex;align-items:center;gap:10px;padding:16px 20px 20px;border-bottom:1px solid var(--border);}
-.ds-nav-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);padding:18px 20px 5px;font-weight:400;}
-.ds-nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:12px;color:var(--muted);cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;font-weight:300;}
+.ds-nav-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--hint);padding:12px 16px 4px;font-weight:400;}
+.ds-nav-item{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:11px;color:var(--muted);cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;font-weight:300;}
 .ds-nav-item:hover{color:var(--text);background:rgba(255,255,255,0.03);}
 .ds-nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--gold-dim);font-weight:400;}
 .ds-nav-icon{width:14px;height:14px;opacity:0.7;flex-shrink:0;}
@@ -743,14 +743,14 @@ img,svg{max-width:100%;}
 .ds-agent-role{font-size:10px;color:var(--hint);font-weight:300;}
 .ds-topbar{background:var(--bg2);padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
 .ds-page-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--text);}
-.ds-main{grid-column:2;grid-row:2;overflow-y:auto;background:var(--bg2);height:calc(100vh - 56px);}
-.ds-section{display:none;padding:24px 28px;}
+.ds-main{grid-column:2;grid-row:2;overflow-y:auto;background:var(--bg2);height:calc(100vh - 52px);}
+.ds-section{display:none;padding:18px 22px;}
 .ds-section.active{display:block !important;}
 
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.scard{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.scard{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:14px;}
 .scard-lbl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--hint);margin-bottom:7px;}
-.scard-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--text);line-height:1;}
+.scard-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--text);line-height:1;}
 .scard-delta{font-size:11px;margin-top:5px;font-weight:300;}
 .delta-up{color:var(--green);}
 .delta-nu{color:var(--muted);}
@@ -788,7 +788,7 @@ img,svg{max-width:100%;}
 .act-time{font-size:10px;color:var(--hint);margin-top:2px;}
 
 .tools-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px;}
-.tool-chip{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.15s;}
+.tool-chip{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;transition:all 0.15s;}
 .tool-chip:hover{border-color:rgba(196,166,106,0.35);background:var(--gold-dim);}
 .tool-chip-icon{font-size:18px;margin-bottom:5px;}
 .tool-chip-label{font-size:11px;color:var(--muted);font-weight:300;line-height:1.3;}
@@ -1048,7 +1048,7 @@ async function startCheckout(plan) {
 <div id="page-dashboard" class="page active">
 
   <div class="dash">
-    <header style="grid-column:1/-1;grid-row:1;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);background:var(--bg);height:56px;position:sticky;top:0;z-index:10;">
+    <header style="grid-column:1/-1;grid-row:1;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--border);background:var(--bg);height:52px;position:sticky;top:0;z-index:10;">
       <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="window.location.href='index.html'"><div class="logo-mark"></div><span class="logo-name">Dax AI</span></div>
       <div style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:12px;color:var(--hint);" class="hide-mobile">Friday, April 3 · 2026</span>

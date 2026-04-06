@@ -573,10 +573,10 @@ img,svg{max-width:100%;}
 .hero-title em{font-style:italic;color:var(--gold);}
 .hero-title strong{font-weight:500;}
 .hero-sub{font-size:16px;color:var(--muted);font-weight:300;line-height:1.7;max-width:520px;margin-bottom:36px;animation:fadeUp 0.7s 0.2s ease both;}
-.hero-btns{display:flex;align-items:center;gap:14px;animation:fadeUp 0.7s 0.3s ease both;margin-bottom:52px;}
-.hero-btn-primary{height:48px;padding:0 28px;background:var(--gold);border:none;border-radius:9px;color:#1a1612;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:14px;animation:fadeUp 0.7s 0.3s ease both;margin-bottom:52px;flex-wrap:wrap;}
+.hero-btn-primary{height:48px;padding:0 32px;background:var(--gold);border:none;border-radius:9px;color:#1a1612;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;white-space:nowrap;}
 .hero-btn-primary:hover{background:var(--gold2);transform:translateY(-1px);}
-.hero-btn-sec{height:48px;padding:0 24px;background:transparent;border:1px solid var(--border2);border-radius:9px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.15s;font-weight:300;}
+.hero-btn-sec{height:48px;padding:0 24px;background:transparent;border:1px solid var(--border2);border-radius:9px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.15s;font-weight:300;white-space:nowrap;}
 .hero-btn-sec:hover{border-color:rgba(255,255,255,0.25);color:var(--text);}
 .hero-stats{display:flex;align-items:center;animation:fadeUp 0.7s 0.4s ease both;}
 .hstat{padding:0 32px;text-align:center;border-right:1px solid var(--border);}
@@ -981,7 +981,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     }
     // Note: During development we allow access without session
     // In production, uncomment below to require login:
-    // else { window.location.href = 'index.html'; }
+    // else { window.location.href = 'https://csosa18.github.io/dax-ai/index.html'; }
   } catch(e) { console.log('Session check:', e); }
 })();
 
@@ -990,7 +990,7 @@ async function signOut() {
   await supabase.auth.signOut();
   localStorage.removeItem('dax_user_email');
   localStorage.removeItem('dax_user_id');
-  window.location.href = 'index.html';
+  window.location.href = 'https://csosa18.github.io/dax-ai/index.html';
 }
 </script>
 <script src="https://js.stripe.com/v3/"></script>
@@ -1013,8 +1013,8 @@ async function startCheckout(plan) {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwaHpzdWdndGFheXBzY2ZndGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MzU1MTQsImV4cCI6MjA5MTAxMTUxNH0.0BZCNpbJpi5lLIqqypXZHK6TD--8b6263uiJsarOKKI' },
       body: JSON.stringify({
         priceId, plan, email,
-        successUrl: window.location.origin + '/dax-dashboard.html?checkout=success',
-        cancelUrl:  window.location.origin + '/index.html'
+        successUrl: 'https://csosa18.github.io/dax-ai/dax-dashboard.html?checkout=success',
+        cancelUrl:  'https://csosa18.github.io/dax-ai/index.html'
       })
     });
     const data = await resp.json();
@@ -2029,7 +2029,7 @@ function revokeAccess(btn, name) {
 // ─── PAGE NAVIGATION ───
 function showPage(id) {
   if (id === 'landing' || id === 'login' || id === 'request') {
-    window.location.href = 'index.html';
+    window.location.href = 'https://csosa18.github.io/dax-ai/index.html';
     return;
   }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));

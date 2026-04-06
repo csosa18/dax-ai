@@ -572,10 +572,10 @@ img,svg{max-width:100%;}
 .hero-title em{font-style:italic;color:var(--gold);}
 .hero-title strong{font-weight:500;}
 .hero-sub{font-size:16px;color:var(--muted);font-weight:300;line-height:1.7;max-width:520px;margin-bottom:36px;animation:fadeUp 0.7s 0.2s ease both;}
-.hero-btns{display:flex;align-items:center;gap:14px;animation:fadeUp 0.7s 0.3s ease both;margin-bottom:52px;}
-.hero-btn-primary{height:48px;padding:0 28px;background:var(--gold);border:none;border-radius:9px;color:#1a1612;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:14px;animation:fadeUp 0.7s 0.3s ease both;margin-bottom:52px;flex-wrap:wrap;}
+.hero-btn-primary{height:48px;padding:0 32px;background:var(--gold);border:none;border-radius:9px;color:#1a1612;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;white-space:nowrap;}
 .hero-btn-primary:hover{background:var(--gold2);transform:translateY(-1px);}
-.hero-btn-sec{height:48px;padding:0 24px;background:transparent;border:1px solid var(--border2);border-radius:9px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.15s;font-weight:300;}
+.hero-btn-sec{height:48px;padding:0 24px;background:transparent;border:1px solid var(--border2);border-radius:9px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all 0.15s;font-weight:300;white-space:nowrap;}
 .hero-btn-sec:hover{border-color:rgba(255,255,255,0.25);color:var(--text);}
 .hero-stats{display:flex;align-items:center;animation:fadeUp 0.7s 0.4s ease both;}
 .hstat{padding:0 32px;text-align:center;border-right:1px solid var(--border);}
@@ -981,8 +981,8 @@ async function startCheckout(plan) {
         priceId,
         plan,
         email,
-        successUrl: window.location.origin + '/dax-dashboard.html?checkout=success',
-        cancelUrl:  window.location.origin + '/index.html?checkout=cancelled'
+        successUrl: 'https://csosa18.github.io/dax-ai/dax-dashboard.html?checkout=success',
+        cancelUrl:  'https://csosa18.github.io/dax-ai/index.html'
       })
     });
 
@@ -2258,7 +2258,7 @@ function scTab(btn, targetId) {
         <div class="ds-agent-av">JR</div>
         <div><div class="ds-agent-name">Jordan Rivera</div><div class="ds-agent-role">Senior agent</div></div>
       </div>
-      <div style="padding:10px 20px;border-top:1px solid var(--border);"><button style="width:100%;background:none;border:1px solid var(--border);border-radius:7px;padding:7px;font-size:11px;color:var(--hint);cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="window.location.href='dax-dashboard.html'">⚙ Admin panel</button></div>
+      <div style="padding:10px 20px;border-top:1px solid var(--border);"><button style="width:100%;background:none;border:1px solid var(--border);border-radius:7px;padding:7px;font-size:11px;color:var(--hint);cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="window.location.href='https://csosa18.github.io/dax-ai/dax-dashboard.html'">⚙ Admin panel</button></div>
     </aside>
     <main class="ds-main">
       <!-- HOME -->
@@ -2821,7 +2821,7 @@ Tanya Williams,tanya@email.com,718-555-0349,New,Condo under 650K,First contact v
 <div id="page-admin" class="page">
   <div class="admin-wrap">
     <header class="admin-topbar">
-      <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="window.location.href='dax-dashboard.html'"><div class="logo-mark"></div><span class="logo-name">Dax AI</span><span class="admin-badge">Admin</span></div>
+      <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="window.location.href='https://csosa18.github.io/dax-ai/dax-dashboard.html'"><div class="logo-mark"></div><span class="logo-name">Dax AI</span><span class="admin-badge">Admin</span></div>
       <div style="display:flex;align-items:center;gap:12px;">
         <div style="width:30px;height:30px;border-radius:7px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;background:rgba(255,255,255,0.04);position:relative;">🔔<div style="position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--gold);border:1.5px solid var(--bg);"></div></div>
         <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#c4a66a,#7a6030);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#1a1612;cursor:pointer;">YO</div>
@@ -3339,7 +3339,7 @@ async function handleGoogleSignIn() {
   try {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/dax-dashboard.html' }
+      options: { redirectTo: 'https://csosa18.github.io/dax-ai/dax-dashboard.html' }
     });
     if (error) showToast('Google sign in failed: ' + error.message);
   } catch(err) {
@@ -3355,7 +3355,7 @@ async function handleForgotPassword() {
     return;
   }
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + '/dax-dashboard.html'
+    redirectTo: 'https://csosa18.github.io/dax-ai/dax-dashboard.html'
   });
   if (!error) showToast('✓ Password reset email sent to ' + email);
   else showToast('Error: ' + error.message);

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign in — Dax AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09090a;--warm:#f5f0ea;--gold:#c4a66a;--gold2:#dfc088;
+  --border:#e0d9cf;--muted:#9a9080;--text:#1a1612;--hint:#b8b0a4;
+  --green:#2d7a4f;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;}
+body{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+
+/* LEFT — brand panel */
+.brand{background:var(--bg);padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.brand-logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;border:1.5px solid rgba(196,166,106,0.5);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:#e8e0d0;letter-spacing:0.04em;}
+.brand-hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0;}
+.brand-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#e8e0d0;line-height:1.15;margin-bottom:16px;}
+.brand-title em{font-style:italic;color:var(--gold);}
+.brand-sub{font-size:13px;color:rgba(232,224,208,0.5);font-weight:300;line-height:1.7;max-width:280px;}
+.brand-stats{display:flex;gap:32px;}
+.bstat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--gold);line-height:1;}
+.bstat-lbl{font-size:10px;color:rgba(232,224,208,0.35);margin-top:3px;letter-spacing:0.05em;text-transform:uppercase;}
+.brand-geo{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+
+/* RIGHT — form panel */
+.form-panel{background:var(--warm);padding:52px 48px;display:flex;flex-direction:column;justify-content:center;}
+.form-eyebrow{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:400;}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--text);margin-bottom:32px;}
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:400;}
+.form-input{width:100%;height:46px;padding:0 16px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;outline:none;transition:border-color 0.15s;}
+.form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,166,106,0.1);}
+.form-input::placeholder{color:var(--hint);}
+.form-forgot{font-size:12px;color:var(--gold);cursor:pointer;text-align:right;margin-top:6px;display:block;}
+.form-btn{width:100%;height:48px;background:var(--text);border:none;border-radius:8px;color:var(--warm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s;margin-bottom:14px;margin-top:4px;}
+.form-btn:hover{background:#2a2420;}
+.form-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.divider{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.divider-line{flex:1;height:1px;background:var(--border);}
+.divider-text{font-size:11px;color:var(--hint);}
+.google-btn{width:100%;height:46px;background:#fff;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:border-color 0.15s;}
+.google-btn:hover{border-color:#aaa;}
+.form-note{margin-top:24px;font-size:12px;color:var(--muted);line-height:1.7;}
+.form-note a{color:var(--gold);cursor:pointer;text-decoration:none;}
+.error-box{display:none;background:#fff0f0;border:1px solid #f5c6c6;border-radius:7px;padding:10px 14px;font-size:12px;color:#c0392b;margin-bottom:14px;}
+.success-box{display:none;background:#f0fff4;border:1px solid #a8e6be;border-radius:7px;padding:10px 14px;font-size:12px;color:var(--green);margin-bottom:14px;}
+
+/* Mobile */
+@media(max-width:767px){
+  body{grid-template-columns:1fr;}
+  .brand{display:none;}
+  .form-panel{padding:40px 24px;min-height:100vh;}
+  .form-title{font-size:28px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LEFT: Brand -->
+<div class="brand">
+  <svg class="brand-geo" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice">
+    <line x1="0" y1="680" x2="220" y2="0" stroke="rgba(196,166,106,0.05)" stroke-width="1"/>
+    <line x1="80" y1="700" x2="360" y2="0" stroke="rgba(196,166,106,0.04)" stroke-width="1"/>
+    <rect x="60" y="200" width="64" height="64" rx="5" fill="none" stroke="rgba(196,166,106,0.08)" stroke-width="1" transform="rotate(18 92 232)"/>
+    <rect x="260" y="440" width="50" height="50" rx="4" fill="none" stroke="rgba(196,166,106,0.07)" stroke-width="1" transform="rotate(-14 285 465)"/>
+    <circle cx="200" cy="600" r="160" fill="none" stroke="rgba(196,166,106,0.03)" stroke-width="1"/>
+  </svg>
+  <div class="brand-logo">
+    <div class="logo-mark">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="rgba(196,166,106,0.8)" stroke-width="1.5">
+        <path d="M7 1L13 4V10L7 13L1 10V4L7 1Z"/>
+        <path d="M7 4L10 5.5V8.5L7 10L4 8.5V5.5L7 4Z" fill="rgba(196,166,106,0.3)" stroke="none"/>
+      </svg>
+    </div>
+    <span class="logo-name">Dax AI</span>
+  </div>
+  <div class="brand-hero">
+    <div class="brand-title">Close more.<br><em>Work less.</em><br>List better.</div>
+    <div class="brand-sub">Your AI-powered suite for listings, staging, leads, and marketing. Built exclusively for real estate agents.</div>
+  </div>
+  <div class="brand-stats">
+    <div><div class="bstat-num">2m</div><div class="bstat-lbl">avg. listing</div></div>
+    <div><div class="bstat-num">5×</div><div class="bstat-lbl">faster follow-ups</div></div>
+    <div><div class="bstat-num">6</div><div class="bstat-lbl">AI tools</div></div>
+  </div>
+</div>
+
+<!-- RIGHT: Form -->
+<div class="form-panel">
+  <div class="form-eyebrow">Agent portal</div>
+  <div class="form-title">Welcome back</div>
+
+  <div class="error-box" id="error-box"></div>
+  <div class="success-box" id="success-box"></div>
+
+  <div class="form-group">
+    <label class="form-label">Email address</label>
+    <input class="form-input" id="email" type="email" placeholder="you@brokerage.com" autocomplete="email"/>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Password</label>
+    <input class="form-input" id="password" type="password" placeholder="••••••••••" autocomplete="current-password"/>
+    <span class="form-forgot" onclick="handleForgot()">Forgot password?</span>
+  </div>
+
+  <button class="form-btn" id="signin-btn" onclick="handleSignIn()">Sign in to dashboard</button>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-text">or continue with</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <button class="google-btn" onclick="handleGoogle()">
+    <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+    Sign in with Google
+  </button>
+
+  <div class="form-note">
+    New agent? <a href="index.html#pricing-anchor">Request access</a> on our website.<br>
+    <a href="index.html">← Back to home</a>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://jphzsuggtaaypscfgtcl.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwaHpzdWdndGFheXBzY2ZndGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MzU1MTQsImV4cCI6MjA5MTAxMTUxNH0.0BZCNpbJpi5lLIqqypXZHK6TD--8b6263uiJsarOKKI';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── UI helpers ──
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('success-box').style.display = 'none';
+}
+function showSuccess(msg) {
+  const el = document.getElementById('success-box');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('error-box').style.display = 'none';
+}
+function clearMessages() {
+  document.getElementById('error-box').style.display = 'none';
+  document.getElementById('success-box').style.display = 'none';
+}
+function setBtnState(loading) {
+  const btn = document.getElementById('signin-btn');
+  btn.textContent = loading ? 'Signing in…' : 'Sign in to dashboard';
+  btn.disabled = loading;
+}
+
+// ── MAIN SIGN IN ──
+async function handleSignIn() {
+  const email    = document.getElementById('email').value.trim().toLowerCase();
+  const password = document.getElementById('password').value;
+
+  // Front-end validation
+  if (!email) { showError('Please enter your email address.'); return; }
+  if (!email.includes('@') || !email.includes('.')) { showError('Please enter a valid email address.'); return; }
+  if (!password) { showError('Please enter your password.'); return; }
+  if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
+
+  clearMessages();
+  setBtnState(true);
+
+  try {
+    // Step 1: Authenticate with Supabase
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      const msg = error.message.includes('Invalid login') || error.message.includes('invalid')
+        ? 'Incorrect email or password. Please try again.'
+        : error.message;
+      showError(msg);
+      setBtnState(false);
+      return;
+    }
+
+    if (!data?.user) {
+      showError('Authentication failed. Please try again.');
+      setBtnState(false);
+      return;
+    }
+
+    // Step 2: Verify the session is real
+    const { data: { user }, error: userErr } = await sb.auth.getUser();
+    if (userErr || !user) {
+      showError('Could not verify your account. Please try again.');
+      setBtnState(false);
+      return;
+    }
+
+    // Step 3: Check profile status in database
+    const { data: profile } = await sb.from('profiles')
+      .select('status, plan, full_name')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.status === 'suspended') {
+      await sb.auth.signOut();
+      showError('Your account has been suspended. Contact support at hello@getdaxai.com');
+      setBtnState(false);
+      return;
+    }
+
+    // Step 4: All checks passed — store session and redirect
+    localStorage.setItem('dax_user_email', user.email);
+    localStorage.setItem('dax_user_id', user.id);
+    localStorage.setItem('dax_user_plan', profile?.plan || 'solo');
+    if (profile?.full_name) localStorage.setItem('dax_user_name', profile.full_name);
+
+    // Use replace so back button doesn't return to login
+    window.location.replace('dax-dashboard.html');
+
+  } catch(err) {
+    console.error('Sign in error:', err);
+    showError('Something went wrong. Please check your connection and try again.');
+    setBtnState(false);
+  }
+}
+
+// ── GOOGLE SIGN IN ──
+async function handleGoogle() {
+  try {
+    clearMessages();
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: 'https://usedaxai.com/dax-dashboard.html' }
+    });
+    if (error) showError('Google sign in failed. Please use email and password.');
+  } catch(err) {
+    showError('Google sign in unavailable. Please use email and password.');
+  }
+}
+
+// ── FORGOT PASSWORD ──
+async function handleForgot() {
+  const email = document.getElementById('email').value.trim();
+  if (!email) { showError('Enter your email address above, then click Forgot password.'); return; }
+  clearMessages();
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://usedaxai.com/dax-dashboard.html'
+  });
+  if (!error) showSuccess('✓ Password reset email sent to ' + email + '. Check your inbox.');
+  else showError(error.message);
+}
+
+// ── ENTER KEY ──
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleSignIn();
+});
+
+// ── SUSPENDED MESSAGE ──
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('reason') === 'suspended') {
+    showError('Your account has been suspended. Contact support at hello@getdaxai.com');
+  }
+})();
+
+// ── AUTO-REDIRECT IF ALREADY LOGGED IN ──
+(async function() {
+  // If coming from sign out, clear everything first
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('signout')) {
+    await sb.auth.signOut();
+    localStorage.clear();
+    return;
+  }
+  // Otherwise check for valid existing session
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return;
+    // Double-check the session is real
+    const { data: { user }, error } = await sb.auth.getUser();
+    if (user && !error) {
+      window.location.replace('dax-dashboard.html');
+    } else {
+      await sb.auth.signOut();
+    }
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>

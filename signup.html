@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Request Access — Dax AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09090a;--warm:#f5f0ea;--gold:#c4a66a;--gold2:#dfc088;
+  --border:#e0d9cf;--muted:#9a9080;--text:#1a1612;--hint:#b8b0a4;
+  --green:#2d7a4f;--red:#c0392b;
+}
+html,body{min-height:100%;font-family:'DM Sans',sans-serif;}
+body{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+
+/* ── LEFT BRAND PANEL ── */
+.brand{background:var(--bg);padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.brand-logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;border:1.5px solid rgba(196,166,106,0.5);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:#e8e0d0;letter-spacing:0.04em;}
+.brand-hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0;}
+.brand-title{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:300;color:#e8e0d0;line-height:1.15;margin-bottom:16px;}
+.brand-title em{font-style:italic;color:var(--gold);}
+.brand-sub{font-size:13px;color:rgba(232,224,208,0.5);font-weight:300;line-height:1.7;max-width:300px;margin-bottom:28px;}
+.brand-feature{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.brand-feature-icon{width:20px;height:20px;border-radius:4px;background:rgba(196,166,106,0.12);border:1px solid rgba(196,166,106,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;}
+.brand-feature-text{font-size:12px;color:rgba(232,224,208,0.5);font-weight:300;line-height:1.5;}
+.brand-geo{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.brand-stats{display:flex;gap:28px;}
+.bstat-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--gold);line-height:1;}
+.bstat-lbl{font-size:10px;color:rgba(232,224,208,0.35);margin-top:3px;letter-spacing:0.05em;text-transform:uppercase;}
+
+/* ── RIGHT FORM PANEL ── */
+.form-panel{background:var(--warm);padding:52px 48px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;}
+.form-eyebrow{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:400;}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--text);margin-bottom:4px;}
+.form-subtitle{font-size:13px;color:var(--muted);font-weight:300;margin-bottom:24px;line-height:1.6;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:400;}
+.form-input{width:100%;height:46px;padding:0 14px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;outline:none;transition:border-color 0.15s;}
+.form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,166,106,0.1);}
+.form-input::placeholder{color:var(--hint);}
+.form-select{width:100%;height:46px;padding:0 14px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;outline:none;cursor:pointer;}
+.form-textarea{width:100%;padding:12px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;outline:none;resize:vertical;min-height:70px;transition:border-color 0.15s;line-height:1.6;}
+.form-textarea:focus{border-color:var(--gold);}
+
+/* Plan selector */
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.plan-card{padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;background:#fff;}
+.plan-card:hover{border-color:var(--gold);}
+.plan-card.sel{border-color:var(--gold);background:rgba(196,166,106,0.06);}
+.plan-card-name{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.plan-card-price{font-size:11px;color:var(--muted);}
+.plan-card-trial{font-size:10px;color:var(--gold);margin-top:3px;}
+
+/* Referral section */
+.referral-toggle{display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer;}
+.referral-toggle input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--gold);}
+.referral-toggle-label{font-size:13px;color:var(--muted);font-weight:300;cursor:pointer;}
+.referral-section{display:none;background:rgba(196,166,106,0.06);border:1px solid rgba(196,166,106,0.2);border-radius:8px;padding:16px;margin-bottom:14px;}
+.referral-section.open{display:block;}
+.referral-note{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
+
+/* Submit button */
+.submit-btn{width:100%;height:50px;background:var(--text);border:none;border-radius:8px;color:var(--warm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background 0.15s;margin-bottom:14px;}
+.submit-btn:hover{background:#2a2420;}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+
+/* Messages */
+.error-box{display:none;background:#fff0f0;border:1px solid #f5c6c6;border-radius:7px;padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:14px;}
+.success-wrap{display:none;text-align:center;padding:32px 0;}
+.success-icon{font-size:40px;margin-bottom:14px;}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--text);margin-bottom:8px;}
+.success-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 20px;}
+.success-detail{font-size:12px;color:var(--hint);line-height:1.6;}
+
+.form-note{font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+.form-note a{color:var(--gold);text-decoration:none;cursor:pointer;}
+
+/* Mobile */
+@media(max-width:767px){
+  body{grid-template-columns:1fr;}
+  .brand{display:none;}
+  .form-panel{padding:36px 24px;min-height:100vh;}
+  .form-row{grid-template-columns:1fr;}
+  .plan-grid{grid-template-columns:1fr 1fr;}
+  .form-title{font-size:26px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LEFT: Brand -->
+<div class="brand">
+  <svg class="brand-geo" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice">
+    <line x1="0" y1="680" x2="220" y2="0" stroke="rgba(196,166,106,0.05)" stroke-width="1"/>
+    <line x1="80" y1="700" x2="360" y2="0" stroke="rgba(196,166,106,0.04)" stroke-width="1"/>
+    <rect x="60" y="200" width="64" height="64" rx="5" fill="none" stroke="rgba(196,166,106,0.08)" stroke-width="1" transform="rotate(18 92 232)"/>
+    <rect x="260" y="440" width="50" height="50" rx="4" fill="none" stroke="rgba(196,166,106,0.07)" stroke-width="1" transform="rotate(-14 285 465)"/>
+    <circle cx="200" cy="600" r="160" fill="none" stroke="rgba(196,166,106,0.03)" stroke-width="1"/>
+  </svg>
+  <div class="brand-logo">
+    <div class="logo-mark">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="rgba(196,166,106,0.8)" stroke-width="1.5">
+        <path d="M7 1L13 4V10L7 13L1 10V4L7 1Z"/>
+        <path d="M7 4L10 5.5V8.5L7 10L4 8.5V5.5L7 4Z" fill="rgba(196,166,106,0.3)" stroke="none"/>
+      </svg>
+    </div>
+    <span class="logo-name">Dax AI</span>
+  </div>
+  <div class="brand-hero">
+    <div class="brand-title">Built for agents<br>who close <em>more.</em></div>
+    <div class="brand-sub">The AI suite exclusively for real estate agents. Write listings, stage smarter, follow up faster, and research any market — all in one place.</div>
+    <div class="brand-feature">
+      <div class="brand-feature-icon">✍️</div>
+      <div class="brand-feature-text">Listing descriptions in 2 minutes — MLS-ready, professional, any market</div>
+    </div>
+    <div class="brand-feature">
+      <div class="brand-feature-icon">🏠</div>
+      <div class="brand-feature-text">Virtual staging coming soon — show sellers what their home could look like</div>
+    </div>
+    <div class="brand-feature">
+      <div class="brand-feature-icon">📊</div>
+      <div class="brand-feature-text">Live rental market data — real numbers, not templates</div>
+    </div>
+    <div class="brand-feature">
+      <div class="brand-feature-icon">💬</div>
+      <div class="brand-feature-text">AI follow-up emails and texts — never let a lead go cold again</div>
+    </div>
+  </div>
+  <div class="brand-stats">
+    <div><div class="bstat-num">2m</div><div class="bstat-lbl">avg. listing</div></div>
+    <div><div class="bstat-num">7</div><div class="bstat-lbl">AI tools</div></div>
+    <div><div class="bstat-num">$0</div><div class="bstat-lbl">to start</div></div>
+  </div>
+</div>
+
+<!-- RIGHT: Form -->
+<div class="form-panel">
+  <!-- Success state -->
+  <div class="success-wrap" id="success-wrap">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Request received!</div>
+    <div class="success-sub">We review every application personally. You will hear back within 1 business day with your login credentials and payment link.</div>
+    <div class="success-detail" id="success-detail"></div>
+    <div style="margin-top:20px;">
+      <a href="index.html" style="font-size:12px;color:var(--gold);text-decoration:none;">← Back to home</a>
+    </div>
+  </div>
+
+  <!-- Form state -->
+  <div id="form-wrap">
+    <div class="form-eyebrow">Request access</div>
+    <div class="form-title">Join Dax AI</div>
+    <div class="form-subtitle">Free trial included. We approve every account personally — usually within 1 business day.</div>
+
+    <div class="error-box" id="error-box"></div>
+
+    <!-- Name row -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">First name *</label>
+        <input class="form-input" id="fname" type="text" placeholder="Jordan" autocomplete="given-name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last name *</label>
+        <input class="form-input" id="lname" type="text" placeholder="Rivera" autocomplete="family-name"/>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="form-group">
+      <label class="form-label">Work email *</label>
+      <input class="form-input" id="email" type="email" placeholder="you@brokerage.com" autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone number *</label>
+      <input class="form-input" id="phone" type="tel" placeholder="(212) 555-0190" autocomplete="tel"/>
+    </div>
+
+    <!-- Brokerage -->
+    <div class="form-group">
+      <label class="form-label">Brokerage / company</label>
+      <input class="form-input" id="brokerage" type="text" placeholder="e.g. Compass, Keller Williams, independent"/>
+    </div>
+
+    <!-- Plan selection -->
+    <div class="form-group">
+      <label class="form-label">Plan you're interested in *</label>
+      <div class="plan-grid" id="plan-grid">
+        <div class="plan-card sel" data-plan="solo" onclick="selectPlan(this)">
+          <div class="plan-card-name">Solo agent</div>
+          <div class="plan-card-price">$49/mo · 1 agent</div>
+          <div class="plan-card-trial">Free trial included</div>
+        </div>
+        <div class="plan-card" data-plan="team" onclick="selectPlan(this)">
+          <div class="plan-card-name">Team</div>
+          <div class="plan-card-price">$179/mo · up to 5</div>
+          <div class="plan-card-trial">Free trial included</div>
+        </div>
+        <div class="plan-card" data-plan="brokerage" onclick="selectPlan(this)">
+          <div class="plan-card-name">Brokerage</div>
+          <div class="plan-card-price">$599/mo · up to 10</div>
+          <div class="plan-card-trial">Pilot program</div>
+        </div>
+        <div class="plan-card" data-plan="enterprise" onclick="selectPlan(this)">
+          <div class="plan-card-name">Enterprise</div>
+          <div class="plan-card-price">25+ agents · custom</div>
+          <div class="plan-card-trial">Contact us</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How did you hear -->
+    <div class="form-group">
+      <label class="form-label">How did you hear about us?</label>
+      <select class="form-select" id="source">
+        <option value="">Select one...</option>
+        <option value="referral">Referred by another agent</option>
+        <option value="google">Google search</option>
+        <option value="social">Social media</option>
+        <option value="broker">My broker/team lead</option>
+        <option value="conference">Real estate conference/event</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <!-- Referral code section -->
+    <label class="referral-toggle">
+      <input type="checkbox" id="has-referral" onchange="toggleReferral(this)"/>
+      <span class="referral-toggle-label">I have a referral code or was referred by someone</span>
+    </label>
+
+    <div class="referral-section" id="referral-section">
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Referral code</label>
+          <input class="form-input" id="referral-code" type="text" placeholder="e.g. JORDAN2024" style="text-transform:uppercase;"/>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Referred by (name)</label>
+          <input class="form-input" id="referred-by" type="text" placeholder="Agent's name"/>
+        </div>
+      </div>
+      <div class="referral-note">✓ If valid, your referrer gets 1 free month when you become a paying subscriber. You both win.</div>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-group">
+      <label class="form-label">Anything else? (optional)</label>
+      <textarea class="form-textarea" id="notes" placeholder="Tell us about your business, what you're looking to solve, or any questions you have..."></textarea>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitRequest()">Submit request →</button>
+
+    <div class="form-note">
+      By submitting you agree to our terms of service. Already have an account? <a href="login.html">Sign in →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://jphzsuggtaaypscfgtcl.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwaHpzdWdndGFheXBzY2ZndGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MzU1MTQsImV4cCI6MjA5MTAxMTUxNH0.0BZCNpbJpi5lLIqqypXZHK6TD--8b6263uiJsarOKKI';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── Pre-select plan from URL ──
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const plan = params.get('plan');
+  const refCode = params.get('ref');
+  if (plan) {
+    document.querySelectorAll('.plan-card').forEach(c => {
+      c.classList.toggle('sel', c.dataset.plan === plan);
+    });
+  }
+  if (refCode) {
+    document.getElementById('has-referral').checked = true;
+    document.getElementById('referral-section').classList.add('open');
+    document.getElementById('referral-code').value = refCode.toUpperCase();
+  }
+})();
+
+// ── Plan selection ──
+function selectPlan(el) {
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function getSelectedPlan() {
+  return document.querySelector('.plan-card.sel')?.dataset?.plan || 'solo';
+}
+
+// ── Referral toggle ──
+function toggleReferral(cb) {
+  document.getElementById('referral-section').classList.toggle('open', cb.checked);
+}
+
+// ── Form submission ──
+async function submitRequest() {
+  const fname     = document.getElementById('fname').value.trim();
+  const lname     = document.getElementById('lname').value.trim();
+  const email     = document.getElementById('email').value.trim().toLowerCase();
+  const phone     = document.getElementById('phone').value.trim();
+  const brokerage = document.getElementById('brokerage').value.trim();
+  const plan      = getSelectedPlan();
+  const source    = document.getElementById('source').value;
+  const notes     = document.getElementById('notes').value.trim();
+  const refCode   = document.getElementById('referral-code').value.trim().toUpperCase();
+  const refBy     = document.getElementById('referred-by').value.trim();
+  const errEl     = document.getElementById('error-box');
+  const btn       = document.getElementById('submit-btn');
+
+  // Validation
+  errEl.style.display = 'none';
+  if (!fname) { showError('Please enter your first name.'); return; }
+  if (!lname) { showError('Please enter your last name.'); return; }
+  if (!email || !email.includes('@')) { showError('Please enter a valid email address.'); return; }
+  if (!phone) { showError('Please enter your phone number.'); return; }
+
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  try {
+    // ── Validate referral code if provided ──
+    let referralValid = false;
+    let referrerId = null;
+    if (refCode) {
+      const { data: refData } = await sb.from('referral_codes').select('*').eq('code', refCode).eq('active', true).single();
+      if (refData) {
+        referralValid = true;
+        referrerId = refData.owner_id;
+      }
+    }
+
+    // ── Save application to Supabase ──
+    const notesText = [
+      notes,
+      source ? 'Source: ' + source : '',
+      refCode ? 'Referral code: ' + refCode + (refBy ? ' (from ' + refBy + ')' : '') : '',
+      referralValid ? 'Referral VALID' : ''
+    ].filter(Boolean).join('\n') || null;
+
+    const { error } = await sb.from('applications').insert({
+      first_name:    fname,
+      last_name:     lname,
+      email:         email,
+      phone:         phone,
+      brokerage:     brokerage || null,
+      plan:          plan,
+      status:        'pending',
+      notes:         notesText,
+      created_at:    new Date().toISOString(),
+      updated_at:    new Date().toISOString()
+    });
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+      if (!error.message.includes('duplicate') && !error.message.includes('unique')) {
+        throw new Error(error.message);
+      }
+      // Duplicate email — still show success
+    }
+
+    // ── Notify admin via Edge Function ──
+    try {
+      await fetch('https://jphzsuggtaaypscfgtcl.supabase.co/functions/v1/notify-admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwaHpzdWdndGFheXBzY2ZndGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MzU1MTQsImV4cCI6MjA5MTAxMTUxNH0.0BZCNpbJpi5lLIqqypXZHK6TD--8b6263uiJsarOKKI'
+        },
+        body: JSON.stringify({
+          type: 'new_application',
+          data: { first_name: fname, last_name: lname, email, phone, brokerage, plan, notes: notesText }
+        })
+      });
+    } catch(e) { /* email failure doesn't block signup */ }
+
+    // ── Show success ──
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('success-wrap').style.display = 'block';
+
+    let successDetail = 'Your request for the <strong>' + plan + '</strong> plan has been received.';
+    if (referralValid) {
+      successDetail += '<br><span style="color:var(--green);">✓ Referral code applied successfully!</span>';
+    }
+    document.getElementById('success-detail').innerHTML = successDetail;
+
+  } catch(err) {
+    console.error('Submit error:', err);
+    const msg = err.message || String(err);
+    if (msg.includes('duplicate') || msg.includes('unique') || msg.includes('already')) {
+      // Already applied — show success anyway
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('success-wrap').style.display = 'block';
+      document.getElementById('success-detail').textContent = 'You have already submitted a request with this email. We will be in touch shortly.';
+    } else {
+      showError('Something went wrong: ' + msg + '. Please try again or email hello@usedaxai.com');
+      btn.textContent = 'Submit request →';
+      btn.disabled = false;
+    }
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Enter key support
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') submitRequest();
+});
+</script>
+</body>
+</html>
